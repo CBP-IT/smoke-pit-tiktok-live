@@ -1,0 +1,29 @@
+{
+  "name": "smoke-pit-tiktok-live",
+  "productName": "Smoke Pit TikTok LIVE",
+  "version": "0.1.0",
+  "description": "Get a TikTok LIVE stream key for OBS through Streamlabs — The Smoke Pit panelist edition.",
+  "author": "Crayon Box Politics",
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CBP-IT/smoke-pit-tiktok-live.git"
+  },
+  "private": true,
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json && tsc -p tsconfig.renderer.json && node scripts/copy-static.mjs",
+    "start": "npm run build && electron .",
+    "typecheck": "tsc -p tsconfig.test.json && tsc -p tsconfig.renderer.json --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "dist": "npm run build && electron-builder --mac --publish never",
+    "dist:unsigned": "npm run build && electron-builder --mac --publish never -c.mac.identity=null -c.mac.notarize=false"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

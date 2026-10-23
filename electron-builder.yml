@@ -1,0 +1,28 @@
+appId: com.crayonboxpolitics.smokepit.tiktoklive
+productName: Smoke Pit TikTok LIVE
+copyright: Copyright © 2026 Crayon Box Politics. Based on work by Loukious. GPL-3.0.
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - package.json
+  - LICENSE
+mac:
+  category: public.app-category.video
+  icon: build/icon.png
+  target:
+    - target: dmg
+      arch: universal
+    - target: zip
+      arch: universal
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  # Signs with the Developer ID certificate in CSC_LINK / CSC_KEY_PASSWORD and
+  # notarizes with APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID.
+  notarize: true
+dmg:
+  title: Smoke Pit TikTok LIVE
+artifactName: Smoke-Pit-TikTok-LIVE-${version}-mac.${ext}

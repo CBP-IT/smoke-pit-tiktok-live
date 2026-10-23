@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Smoke Pit TikTok LIVE</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="renderer.js"></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <img src="icon.png" alt="" width="44" height="44" />
+      <div>
+        <p class="eyebrow">The Smoke Pit</p>
+        <h1>TikTok LIVE</h1>
+      </div>
+    </header>
+
+    <main>
+      <!-- First run: the panelist has to accept the risk before anything else. -->
+      <section id="risk" class="card" hidden>
+        <p class="card-label">Before you start</p>
+        <h2>This is an unofficial tool</h2>
+        <ul class="plain">
+          <li>
+            It gets your TikTok stream key through Streamlabs’ TikTok access, the same way the
+            Streamlabs Desktop app does. Neither TikTok nor Streamlabs supports using it like this.
+          </li>
+          <li>
+            It may stop working without warning, and TikTok or Streamlabs could restrict an account
+            that uses it. Use it on your own account at your own risk.
+          </li>
+          <li>Your TikTok account needs LIVE access approved for Streamlabs.</li>
+        </ul>
+        <label class="check">
+          <input type="checkbox" id="risk-check" />
+          <span>I understand and want to use it anyway.</span>
+        </label>
+        <button class="btn" id="risk-continue" disabled>Continue</button>
+      </section>
+
+      <section id="signin" class="card" hidden>
+        <p class="card-label">Sign in</p>
+        <h2>Connect your TikTok account</h2>
+        <p class="muted">
+          You sign in on Streamlabs’ own page in your browser. This app never sees your TikTok
+          password.
+        </p>
+        <div class="stack">
+          <button class="btn" id="login-browser">Sign in with TikTok</button>
+          <button class="btn-ghost" id="login-desktop">Use my Streamlabs Desktop sign-in</button>
+        </div>
+        <p id="login-waiting" class="waiting" hidden>
+          Finish signing in in your browser, then come back here.
+          <button class="link" id="login-cancel">Cancel</button>
+        </p>
+        <p class="muted small">
+          No LIVE access yet?
+          <button class="link" data-open="liveAccess">Apply for TikTok LIVE access</button>
+        </p>
+      </section>
+
+      <section id="account" class="card" hidden>
+        <div class="row between">
+          <p class="card-label">Account</p>
+          <div class="row">
+            <button class="btn-ghost small" id="refresh">Refresh</button>
+            <button class="btn-ghost small" id="signout">Sign out</button>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>TikTok</dt><dd id="acct-username">—</dd></div>
+          <div><dt>LIVE access</dt><dd id="acct-status">—</dd></div>
+          <div><dt>Can go live</dt><dd id="acct-can">—</dd></div>
+        </dl>
+        <p id="acct-blocked" class="notice" hidden>
+          TikTok says this account can’t go live through Streamlabs yet. Check your LIVE access
+          application, then click Refresh.
+        </p>
+      </section>
+
+      <section id="setup" class="card" hidden>
+        <p class="card-label">Stream setup</p>
+        <label class="field">
+          <span>Title</span>
+          <input id="title" type="text" maxlength="100" autocomplete="off" />
+        </label>
+        <p id="show-hint" class="hint" hidden>
+          <span id="show-hint-text"></span>
+          <button class="link" id="use-show-title" hidden>Use this title</button>
+        </p>
+        <label class="field">
+          <span>Category</span>
+          <div class="combo">
+            <input id="category" type="text" autocomplete="off" placeholder="Search, e.g. News" role="combobox" aria-expanded="false" aria-controls="category-list" />
+            <ul id="category-list" role="listbox" hidden></ul>
+          </div>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="mature" />
+          <span>Mature audience (18+)</span>
+        </label>
+        <button class="btn wide" id="go-live">Go LIVE</button>
+      </section>
+
+      <section id="live" class="card live" hidden>
+        <div class="row between">
+          <p class="card-label"><span class="dot"></span> You’re live</p>
+          <button class="link small" data-open="liveCenter">Open TikTok LIVE Center</button>
+        </div>
+        <ol class="steps">
+          <li>In OBS, open <b>Settings → Stream</b> and set <b>Service</b> to <b>Custom…</b></li>
+          <li>Paste the server and stream key below, then click <b>Start Streaming</b>.</li>
+        </ol>
+        <label class="field">
+          <span>Server</span>
+          <div class="copyrow">
+            <input id="rtmp" type="text" readonly />
+            <button class="btn-ghost" data-copy="rtmp">Copy</button>
+          </div>
+        </label>
+        <label class="field">
+          <span>Stream key</span>
+          <div class="copyrow">
+            <input id="key" type="password" readonly />
+            <button class="btn-ghost" id="key-toggle">Show</button>
+            <button class="btn-ghost" data-copy="key">Copy</button>
+          </div>
+        </label>
+        <p id="key-missing" class="notice" hidden>
+          The key from before the app restarted couldn’t be recovered. End this stream and go live
+          again for a new one.
+        </p>
+        <button class="btn danger wide" id="end-live">End LIVE</button>
+        <p id="end-stuck" class="muted small" hidden>
+          Already ended it on TikTok?
+          <button class="link" id="forget-live">Clear it here</button>
+        </p>
+      </section>
+
+      <p id="error" class="error" role="alert" hidden></p>
+      <p id="toast" class="toast" role="status" hidden></p>
+    </main>
+
+    <footer>
+      <p>
+        Unofficial · v<span id="version"></span> ·
+        based on
+        <button class="link" data-open="upstream">Loukious’ stream key generator</button> (GPL-3.0) ·
+        <button class="link" data-open="source">source</button>
+      </p>
+    </footer>
+  </body>
+</html>
