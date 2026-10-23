@@ -83,11 +83,9 @@ Add these repository secrets once (**Settings → Secrets and variables → Acti
 | `APPLE_APP_SPECIFIC_PASSWORD` | appleid.apple.com → Sign-In and Security → App-Specific Passwords. |
 | `APPLE_TEAM_ID` | developer.apple.com → Account → Membership details. |
 
-Then bump `version` in `package.json`, commit, and push a matching tag:
-
-```sh
-git tag v0.1.0 && git push origin v0.1.0
-```
+Then bump `version` in `package.json`, commit, and either push a matching tag
+(`git tag v0.1.1 && git push origin v0.1.1`) or open **Actions → Release (macOS) →
+Run workflow** on `main`, which creates the `v<version>` tag and release itself.
 
 The workflow tests, builds a universal (Apple Silicon + Intel) DMG and zip, signs and
 notarizes them, and attaches them to the GitHub release for that tag.
