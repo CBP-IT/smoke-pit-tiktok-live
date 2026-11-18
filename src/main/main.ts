@@ -23,7 +23,7 @@ function createWindow(): void {
     height: 780,
     minWidth: 480,
     minHeight: 600,
-    title: 'Crayon Eater Media LIVE',
+    title: 'CRAYON EATER MEDIA · LIVE',
     backgroundColor: '#0d1f3c',
     show: false,
     webPreferences: {

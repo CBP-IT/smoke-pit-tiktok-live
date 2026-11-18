@@ -63,8 +63,10 @@ Code layout:
 - `src/main/portal.ts`: the show title from the Smoke Pit portal
 - `src/main/controller.ts`: what each button does, independent of Electron
 - `src/main/main.ts`: Electron window, IPC, quit-while-live warning
-- `src/renderer/`: the window (HTML/CSS/TS in the crayoneatermedia.com palette; Oswald
-  is bundled under the SIL Open Font License, see `src/renderer/fonts/OFL.txt`)
+- `src/renderer/`: the window. It follows the CRAYON EATER STUDIO design rules
+  (CBP-IT/Crayon-Eater-Studio: its `theme.css` tokens, Bebas Neue display type,
+  "CRAYON EATER" in caps, no em dashes in UI copy). Bebas Neue is bundled under the SIL
+  Open Font License, see `src/renderer/fonts/OFL.txt`.
 
 ## Development
 

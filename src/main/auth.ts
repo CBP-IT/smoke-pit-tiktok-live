@@ -169,10 +169,10 @@ export async function findDesktopToken(dir = defaultDesktopStorageDir()): Promis
 function callbackPage(ok: boolean): string {
   const heading = ok ? 'You’re signed in' : 'Sign-in didn’t finish';
   const detail = ok
-    ? 'You can close this tab and go back to the Crayon Eater Media LIVE app.'
-    : 'Go back to the Crayon Eater Media LIVE app and try again.';
-  return `<!doctype html><meta charset="utf-8"><title>Crayon Eater Media LIVE</title>
-<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1f3c;color:#ede8dc;font-family:Georgia,serif;text-align:center">
-<div><p style="letter-spacing:.14em;text-transform:uppercase;color:#d9d3c2;font-size:12px">Crayon Eater Media</p>
-<h1 style="font-weight:normal">${heading}</h1><p style="color:rgba(237,232,220,.7)">${detail}</p></div></body>`;
+    ? 'Close this tab and go back to CRAYON EATER MEDIA LIVE.'
+    : 'Go back to CRAYON EATER MEDIA LIVE and try again.';
+  return `<!doctype html><meta charset="utf-8"><title>CRAYON EATER MEDIA · LIVE</title>
+<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1f3c;color:#ede8dc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;text-align:center">
+<div><p style="letter-spacing:.14em;color:#c1121f;font-size:12px;font-family:system-ui,sans-serif;font-weight:600">CRAYON EATER MEDIA · LIVE</p>
+<h1 style="font-weight:600">${heading}</h1><p style="color:rgba(237,232,220,.7)">${detail}</p></div></body>`;
 }

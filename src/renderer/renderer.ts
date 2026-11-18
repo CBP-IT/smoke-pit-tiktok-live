@@ -116,9 +116,9 @@ async function loadAccount(): Promise<void> {
   if (account) showAccount(account);
   else if (!result.ok && !result.signedOut) {
     // Still signed in but Streamlabs couldn't be reached; keep the account card so Refresh is there.
-    showAccount({ username: '—', applicationStatus: '—', canBeLive: false });
-    $('acct-username').textContent = '—';
-    $('acct-can').textContent = '—';
+    showAccount({ username: '-', applicationStatus: '-', canBeLive: false });
+    $('acct-username').textContent = '-';
+    $('acct-can').textContent = '-';
     $('acct-blocked').hidden = true;
   }
 }
@@ -156,7 +156,7 @@ async function loadShowTitle(): Promise<void> {
   const result = await api.loadShowTitle();
   if (!result.ok) {
     // Not worth an error banner: the saved title still works.
-    renderShowHint('Couldn’t reach the portal for the show title.');
+    renderShowHint('Smoke Pit portal unreachable. Using your saved title.');
     return;
   }
   portalShow = result.data.show;
@@ -315,7 +315,7 @@ goLiveButton.addEventListener('click', async () => {
   if (started) {
     liveStream = started;
     renderLive();
-    toast('Your stream is ready — paste it into OBS.');
+    toast('Stream key ready. Paste it into OBS.');
   }
 });
 

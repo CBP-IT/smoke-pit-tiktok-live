@@ -22,7 +22,7 @@ interface StoredData {
 }
 
 export const DEFAULT_SETTINGS: StreamSettings = {
-  title: 'Crayon Eater Media — LIVE',
+  title: 'CRAYON EATER MEDIA LIVE',
   categoryName: '',
   categoryMaskId: '',
   mature: false,

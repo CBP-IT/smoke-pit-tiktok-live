@@ -94,7 +94,7 @@ test('a rejected token is not saved', async () => {
 test('desktop sign-in explains when Streamlabs Desktop has no sign-in', async () => {
   const { controller } = setup(() => ({ body: {} }), { token: null });
   const result = await controller.loginWithDesktopApp();
-  assert.match((result as any).error, /No Streamlabs Desktop sign-in was found/);
+  assert.match((result as any).error, /No Streamlabs Desktop sign-in on this computer/);
 });
 
 test('cancelling sign-in reports no error text', async () => {
@@ -158,5 +158,5 @@ test('no show or an unreachable portal leaves the saved title alone', async () =
     ok: false,
     error: 'Could not reach the Smoke Pit portal: offline',
   });
-  assert.equal(down.store.settings.title, 'Crayon Eater Media — LIVE');
+  assert.equal(down.store.settings.title, 'CRAYON EATER MEDIA LIVE');
 });
