@@ -23,8 +23,8 @@ function createWindow(): void {
     height: 780,
     minWidth: 480,
     minHeight: 600,
-    title: 'Smoke Pit TikTok LIVE',
-    backgroundColor: '#0a1628',
+    title: 'CRAYON EATER MEDIA · LIVE',
+    backgroundColor: '#0d1f3c',
     show: false,
     webPreferences: {
       preload: join(__dirname, '../preload/preload.js'),
@@ -110,6 +110,6 @@ if (!app.requestSingleInstanceLock()) {
     if (!window) createWindow();
   });
 
-  // A Mac app normally stays running with no windows, but this one has nothing to do without one.
+  // Quit with the last window, on a Mac too: the app has nothing to do without one.
   app.on('window-all-closed', () => app.quit());
 }

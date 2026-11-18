@@ -1,8 +1,9 @@
-name: Release (macOS)
+name: Release
 
-# Builds, signs, notarizes, and publishes the DMG as a GitHub release named
-# after package.json's version (e.g. v0.1.1). Start it either by pushing that
-# tag, or from the Actions tab (Run workflow), which creates the tag itself.
+# Builds the Mac DMG (signed + notarized) and the Windows installer, and
+# publishes both as a GitHub release named after package.json's version
+# (e.g. v0.2.0). Start it either by pushing that tag, or from the Actions tab
+# (Run workflow), which creates the tag itself.
 on:
   push:
     tags: ['v*']
@@ -59,7 +60,30 @@ jobs:
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          if [ "$GITHUB_REF_TYPE" = tag ]; then TAG="$GITHUB_REF_NAME"; else TAG="v$(node -p "require('./package.json').version")"; fi
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --generate-notes
-          gh release upload "$TAG" release/*.dmg release/*.zip --clobber
+        run: scripts/publish-release.sh release/*.dmg release/*.zip
+
+  windows:
+    # Unsigned for now: Windows shows a SmartScreen warning until the
+    # installer is signed (see README).
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Build installer
+        run: npm run dist:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: release/*.exe
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/publish-release.sh release/*.exe

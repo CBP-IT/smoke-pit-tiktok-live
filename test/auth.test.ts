@@ -4,7 +4,14 @@ import { mkdtempSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { buildLoginUrl, createPkce, findDesktopToken, LoginCancelled, loginWithBrowser } from '../src/main/auth';
+import {
+  buildLoginUrl,
+  createPkce,
+  defaultDesktopStorageDir,
+  findDesktopToken,
+  LoginCancelled,
+  loginWithBrowser,
+} from '../src/main/auth';
 import { fakeFetch } from './helpers';
 
 test('PKCE challenge is the unpadded base64url SHA-256 of a 128-hex-char verifier', () => {
@@ -95,4 +102,24 @@ test('findDesktopToken reads the newest leveldb log and its last token', async (
 
 test('findDesktopToken returns null when Streamlabs Desktop is not installed', async () => {
   assert.equal(await findDesktopToken(join(tmpdir(), 'definitely-not-here-xyz')), null);
+});
+
+test('Streamlabs Desktop storage is found where the app keeps it on Mac and Windows', () => {
+  assert.equal(
+    defaultDesktopStorageDir('darwin', {}, '/Users/pit'),
+    '/Users/pit/Library/Application Support/slobs-client/Local Storage/leveldb',
+  );
+  assert.equal(
+    defaultDesktopStorageDir('win32', { APPDATA: 'C:\\Users\\pit\\AppData\\Roaming' }, 'C:\\Users\\pit'),
+    'C:\\Users\\pit\\AppData\\Roaming\\slobs-client\\Local Storage\\leveldb',
+  );
+  assert.equal(
+    defaultDesktopStorageDir('win32', {}, 'C:\\Users\\pit'),
+    'C:\\Users\\pit\\AppData\\Roaming\\slobs-client\\Local Storage\\leveldb',
+  );
+  assert.equal(defaultDesktopStorageDir('linux', {}, '/home/pit'), null);
+});
+
+test('findDesktopToken returns null where Streamlabs Desktop has no storage location', async () => {
+  assert.equal(await findDesktopToken(null), null);
 });

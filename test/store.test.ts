@@ -41,7 +41,7 @@ test('signing out removes the token', () => {
   assert.equal(new Store(file, fakeCipher).token, null);
 });
 
-test('settings default to the Smoke Pit title and persist', () => {
+test('settings default to the Crayon Eater Media title and persist', () => {
   const file = tempFile();
   const store = new Store(file, fakeCipher);
   assert.deepEqual(store.settings, DEFAULT_SETTINGS);

@@ -10,7 +10,7 @@ import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { join, posix, win32 } from 'node:path';
 import { STREAMLABS_USER_AGENT, StreamlabsError, type FetchLike } from './streamlabs';
 
 const TOKEN_EXCHANGE_URL = 'https://streamlabs.com/api/v5/slobs/auth/data';
@@ -121,9 +121,20 @@ export async function exchangeCode(code: string, verifier: string, fetchImpl: Fe
   return token;
 }
 
-/** Where Streamlabs Desktop for Mac keeps its local storage. */
-export function defaultDesktopStorageDir(): string {
-  return join(homedir(), 'Library', 'Application Support', 'slobs-client', 'Local Storage', 'leveldb');
+/** Where Streamlabs Desktop keeps its local storage, or null on a platform it doesn't run on. */
+export function defaultDesktopStorageDir(
+  platform: NodeJS.Platform = process.platform,
+  env: NodeJS.ProcessEnv = process.env,
+  home = homedir(),
+): string | null {
+  if (platform === 'darwin') {
+    return posix.join(home, 'Library', 'Application Support', 'slobs-client', 'Local Storage', 'leveldb');
+  }
+  if (platform === 'win32') {
+    const appData = env.APPDATA || win32.join(home, 'AppData', 'Roaming');
+    return win32.join(appData, 'slobs-client', 'Local Storage', 'leveldb');
+  }
+  return null;
 }
 
 /**
@@ -131,6 +142,7 @@ export function defaultDesktopStorageDir(): string {
  * TikTok. Returns null when Streamlabs Desktop isn't installed or signed in.
  */
 export async function findDesktopToken(dir = defaultDesktopStorageDir()): Promise<string | null> {
+  if (!dir) return null;
   let names: string[];
   try {
     names = (await readdir(dir)).filter((n) => n.endsWith('.log'));
@@ -157,10 +169,10 @@ export async function findDesktopToken(dir = defaultDesktopStorageDir()): Promis
 function callbackPage(ok: boolean): string {
   const heading = ok ? 'You’re signed in' : 'Sign-in didn’t finish';
   const detail = ok
-    ? 'You can close this tab and go back to the Smoke Pit TikTok LIVE app.'
-    : 'Go back to the Smoke Pit TikTok LIVE app and try again.';
-  return `<!doctype html><meta charset="utf-8"><title>Smoke Pit TikTok LIVE</title>
-<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0a1628;color:#f0e6d3;font-family:Georgia,serif;text-align:center">
-<div><p style="letter-spacing:.14em;text-transform:uppercase;color:#c9a84c;font-size:12px">The Smoke Pit</p>
-<h1 style="font-weight:normal">${heading}</h1><p style="color:rgba(240,230,211,.7)">${detail}</p></div></body>`;
+    ? 'Close this tab and go back to CRAYON EATER MEDIA LIVE.'
+    : 'Go back to CRAYON EATER MEDIA LIVE and try again.';
+  return `<!doctype html><meta charset="utf-8"><title>CRAYON EATER MEDIA · LIVE</title>
+<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1f3c;color:#ede8dc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;text-align:center">
+<div><p style="letter-spacing:.14em;color:#c1121f;font-size:12px;font-family:system-ui,sans-serif;font-weight:600">CRAYON EATER MEDIA · LIVE</p>
+<h1 style="font-weight:600">${heading}</h1><p style="color:rgba(237,232,220,.7)">${detail}</p></div></body>`;
 }

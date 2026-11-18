@@ -80,8 +80,8 @@ export class Controller {
         return {
           ok: false,
           error:
-            'No Streamlabs Desktop sign-in was found on this Mac. Open Streamlabs Desktop, sign in with TikTok, ' +
-            'then try again — or use “Sign in with TikTok” instead.',
+            'No Streamlabs Desktop sign-in on this computer. Sign in to Streamlabs Desktop with TikTok and try again, ' +
+            'or use “Sign in with TikTok”.',
         };
       }
       return await this.signInWith(token);

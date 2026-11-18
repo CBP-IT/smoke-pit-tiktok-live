@@ -1,6 +1,6 @@
-appId: com.crayonboxpolitics.smokepit.tiktoklive
-productName: Smoke Pit TikTok LIVE
-copyright: Copyright © 2026 Crayon Box Politics. Based on work by Loukious. GPL-3.0.
+appId: com.crayoneatermedia.live
+productName: Crayon Eater Media LIVE
+copyright: Copyright © 2026 Crayon Eater Media. Based on work by Loukious. GPL-3.0.
 directories:
   output: release
   buildResources: build
@@ -20,9 +20,20 @@ mac:
   gatekeeperAssess: false
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
-  # Signs with the Developer ID certificate in CSC_LINK / CSC_KEY_PASSWORD and
-  # notarizes with APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID.
+  # Signs with the Developer ID identity the release workflow imports into the
+  # keychain, and notarizes with APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID.
   notarize: true
+  artifactName: Crayon-Eater-Media-LIVE-${version}-mac.${ext}
 dmg:
-  title: Smoke Pit TikTok LIVE
-artifactName: Smoke-Pit-TikTok-LIVE-${version}-mac.${ext}
+  title: Crayon Eater Media LIVE
+win:
+  icon: build/icon.png
+  target:
+    - target: nsis
+      arch: x64
+  artifactName: Crayon-Eater-Media-LIVE-${version}-win.${ext}
+nsis:
+  # Installs for the current user without asking for admin, like most small apps.
+  oneClick: true
+  perMachine: false
+  shortcutName: Crayon Eater Media LIVE

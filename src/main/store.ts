@@ -22,7 +22,7 @@ interface StoredData {
 }
 
 export const DEFAULT_SETTINGS: StreamSettings = {
-  title: 'The Smoke Pit — LIVE',
+  title: 'CRAYON EATER MEDIA LIVE',
   categoryName: '',
   categoryMaskId: '',
   mature: false,
