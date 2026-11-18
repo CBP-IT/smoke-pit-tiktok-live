@@ -10,7 +10,7 @@ import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
-import { join, win32 } from 'node:path';
+import { join, posix, win32 } from 'node:path';
 import { STREAMLABS_USER_AGENT, StreamlabsError, type FetchLike } from './streamlabs';
 
 const TOKEN_EXCHANGE_URL = 'https://streamlabs.com/api/v5/slobs/auth/data';
@@ -128,7 +128,7 @@ export function defaultDesktopStorageDir(
   home = homedir(),
 ): string | null {
   if (platform === 'darwin') {
-    return join(home, 'Library', 'Application Support', 'slobs-client', 'Local Storage', 'leveldb');
+    return posix.join(home, 'Library', 'Application Support', 'slobs-client', 'Local Storage', 'leveldb');
   }
   if (platform === 'win32') {
     const appData = env.APPDATA || win32.join(home, 'AppData', 'Roaming');
