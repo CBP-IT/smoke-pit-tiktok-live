@@ -8,6 +8,7 @@ import {
   buildLoginUrl,
   createPkce,
   defaultDesktopStorageDir,
+  exchangeCode,
   findDesktopToken,
   LoginCancelled,
   loginWithBrowser,
@@ -75,7 +76,10 @@ test('browser login fails when Streamlabs redirects without success', async () =
 test('browser login fails when the exchange returns no token', async () => {
   const { fetchImpl } = fakeFetch(() => ({ body: { success: false } }));
   const browser = redirectTo('?success=true&code=c');
-  await assert.rejects(loginWithBrowser({ fetchImpl, openUrl: browser.openUrl }), /did not return a sign-in token/);
+  await assert.rejects(
+    loginWithBrowser({ fetchImpl, openUrl: browser.openUrl }),
+    /didn't return a sign-in token \(HTTP 200: no token in the reply\)/,
+  );
 });
 
 test('browser login can be cancelled and times out', async () => {
@@ -122,4 +126,25 @@ test('Streamlabs Desktop storage is found where the app keeps it on Mac and Wind
 
 test('findDesktopToken returns null where Streamlabs Desktop has no storage location', async () => {
   assert.equal(await findDesktopToken(null), null);
+});
+
+test('the token exchange sends the same headers as Streamlabs Desktop', async () => {
+  const { fetchImpl, requests } = fakeFetch(() => ({ body: { success: true, data: { oauth_token: 't' } } }));
+  assert.equal(await exchangeCode('c', 'v', fetchImpl), 't');
+  const headers = requests[0].init.headers as Record<string, string>;
+  assert.equal(headers['accept-language'], 'en-US');
+  assert.equal(headers['sec-fetch-site'], 'cross-site');
+  assert.equal(headers['sec-fetch-mode'], 'cors');
+  assert.equal(headers['sec-fetch-dest'], 'empty');
+});
+
+test('a failed token exchange reports what Streamlabs said', async () => {
+  const html = fakeFetch(() => ({ status: 401, body: '<html><head><title>Uh oh! / Streamlabs</title></head></html>' }));
+  await assert.rejects(exchangeCode('c', 'v', html.fetchImpl), /HTTP 401: Uh oh! \/ Streamlabs/);
+
+  const refused = fakeFetch(() => ({ body: { success: false, message: 'TikTok account is not eligible' } }));
+  await assert.rejects(exchangeCode('c', 'v', refused.fetchImpl), /HTTP 200: TikTok account is not eligible/);
+
+  const empty = fakeFetch(() => ({ status: 500, body: '' }));
+  await assert.rejects(exchangeCode('c', 'v', empty.fetchImpl), /HTTP 500: unexpected reply/);
 });

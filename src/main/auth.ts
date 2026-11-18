@@ -109,16 +109,42 @@ export async function exchangeCode(code: string, verifier: string, fetchImpl: Fe
   const url = `${TOKEN_EXCHANGE_URL}?${new URLSearchParams({ code_verifier: verifier, code })}`;
   let response: Response;
   try {
-    response = await fetchImpl(url, { headers: { 'user-agent': STREAMLABS_USER_AGENT, accept: '*/*' } });
+    // The same headers Streamlabs Desktop (and TokenRetriever.py) send for this call.
+    response = await fetchImpl(url, {
+      headers: {
+        'user-agent': STREAMLABS_USER_AGENT,
+        accept: '*/*',
+        'accept-language': 'en-US',
+        'sec-fetch-site': 'cross-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+      },
+    });
   } catch (err) {
     throw new StreamlabsError(`Could not reach Streamlabs: ${(err as Error).message}`);
   }
-  const body: any = await response.json().catch(() => null);
-  const token = body?.data?.oauth_token;
-  if (!response.ok || body?.success !== true || typeof token !== 'string' || !token) {
-    throw new StreamlabsError('Streamlabs did not return a sign-in token. Please try again.', response.status);
+  const text = await response.text().catch(() => '');
+  let body: any = null;
+  try {
+    body = JSON.parse(text);
+  } catch {
+    // An HTML error page; its title is reported below.
   }
-  return token;
+  const token = body?.data?.oauth_token;
+  if (response.ok && body?.success === true && typeof token === 'string' && token) return token;
+  throw new StreamlabsError(
+    `Streamlabs didn't return a sign-in token (HTTP ${response.status}: ${exchangeFailureReason(body, text)}). Try again.`,
+    response.status,
+  );
+}
+
+/** Streamlabs' own words for a failed token exchange, so the person can act on them. */
+function exchangeFailureReason(body: any, text: string): string {
+  const message = body?.message ?? body?.error ?? body?.data?.message ?? body?.data?.error;
+  if (typeof message === 'string' && message.trim()) return message.trim().slice(0, 200);
+  if (body) return 'no token in the reply';
+  const title = /<title>([^<]*)<\/title>/i.exec(text)?.[1]?.trim();
+  return title ? title.slice(0, 120) : 'unexpected reply';
 }
 
 /** Where Streamlabs Desktop keeps its local storage, or null on a platform it doesn't run on. */
