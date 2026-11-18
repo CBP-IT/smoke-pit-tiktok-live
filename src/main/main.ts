@@ -34,6 +34,8 @@ function createWindow(): void {
     },
   });
 
+  // Windows and Linux would otherwise show Electron's default File/Edit/View menu bar.
+  if (process.platform !== 'darwin') window.removeMenu();
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   window.webContents.on('will-navigate', (event) => event.preventDefault());
   window.once('ready-to-show', () => window?.show());

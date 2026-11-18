@@ -1,7 +1,7 @@
 {
   "name": "crayon-eater-media-live",
   "productName": "Crayon Eater Media LIVE",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Get a TikTok LIVE stream key for OBS through Streamlabs — Crayon Eater Media edition.",
   "author": "Crayon Eater Media",
   "license": "GPL-3.0-only",
