@@ -20,9 +20,20 @@ mac:
   gatekeeperAssess: false
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
-  # Signs with the Developer ID certificate in CSC_LINK / CSC_KEY_PASSWORD and
-  # notarizes with APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID.
+  # Signs with the Developer ID identity the release workflow imports into the
+  # keychain, and notarizes with APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID.
   notarize: true
+  artifactName: Smoke-Pit-TikTok-LIVE-${version}-mac.${ext}
 dmg:
   title: Smoke Pit TikTok LIVE
-artifactName: Smoke-Pit-TikTok-LIVE-${version}-mac.${ext}
+win:
+  icon: build/icon.png
+  target:
+    - target: nsis
+      arch: x64
+  artifactName: Smoke-Pit-TikTok-LIVE-${version}-win.${ext}
+nsis:
+  # Installs for the current user without asking for admin, like most small apps.
+  oneClick: true
+  perMachine: false
+  shortcutName: Smoke Pit TikTok LIVE

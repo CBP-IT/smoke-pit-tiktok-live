@@ -12,11 +12,12 @@
   "private": true,
   "main": "dist/main/main.js",
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.json && tsc -p tsconfig.renderer.json && node scripts/copy-static.mjs",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.json && tsc -p tsconfig.renderer.json && node scripts/copy-static.mjs",
     "start": "npm run build && electron .",
     "typecheck": "tsc -p tsconfig.test.json && tsc -p tsconfig.renderer.json --noEmit",
     "test": "tsx --test test/*.test.ts",
     "dist": "npm run build && electron-builder --mac --publish never",
+    "dist:win": "npm run build && electron-builder --win --publish never",
     "dist:unsigned": "npm run build && electron-builder --mac --publish never -c.mac.identity=null -c.mac.notarize=false"
   },
   "devDependencies": {

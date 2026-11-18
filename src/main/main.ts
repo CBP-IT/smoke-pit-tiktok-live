@@ -110,6 +110,6 @@ if (!app.requestSingleInstanceLock()) {
     if (!window) createWindow();
   });
 
-  // A Mac app normally stays running with no windows, but this one has nothing to do without one.
+  // Quit with the last window, on a Mac too: the app has nothing to do without one.
   app.on('window-all-closed', () => app.quit());
 }

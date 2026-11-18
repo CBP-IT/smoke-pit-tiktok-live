@@ -10,7 +10,7 @@ import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { join, win32 } from 'node:path';
 import { STREAMLABS_USER_AGENT, StreamlabsError, type FetchLike } from './streamlabs';
 
 const TOKEN_EXCHANGE_URL = 'https://streamlabs.com/api/v5/slobs/auth/data';
@@ -121,9 +121,20 @@ export async function exchangeCode(code: string, verifier: string, fetchImpl: Fe
   return token;
 }
 
-/** Where Streamlabs Desktop for Mac keeps its local storage. */
-export function defaultDesktopStorageDir(): string {
-  return join(homedir(), 'Library', 'Application Support', 'slobs-client', 'Local Storage', 'leveldb');
+/** Where Streamlabs Desktop keeps its local storage, or null on a platform it doesn't run on. */
+export function defaultDesktopStorageDir(
+  platform: NodeJS.Platform = process.platform,
+  env: NodeJS.ProcessEnv = process.env,
+  home = homedir(),
+): string | null {
+  if (platform === 'darwin') {
+    return join(home, 'Library', 'Application Support', 'slobs-client', 'Local Storage', 'leveldb');
+  }
+  if (platform === 'win32') {
+    const appData = env.APPDATA || win32.join(home, 'AppData', 'Roaming');
+    return win32.join(appData, 'slobs-client', 'Local Storage', 'leveldb');
+  }
+  return null;
 }
 
 /**
@@ -131,6 +142,7 @@ export function defaultDesktopStorageDir(): string {
  * TikTok. Returns null when Streamlabs Desktop isn't installed or signed in.
  */
 export async function findDesktopToken(dir = defaultDesktopStorageDir()): Promise<string | null> {
+  if (!dir) return null;
   let names: string[];
   try {
     names = (await readdir(dir)).filter((n) => n.endsWith('.log'));
