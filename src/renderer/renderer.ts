@@ -141,7 +141,7 @@ function renderShowHint(message?: string): void {
   const useButton = $('use-show-title');
   if (portalShow) {
     const when = airTime(portalShow.plannedAt);
-    text.replaceChildren('Portal: ', Object.assign(document.createElement('b'), { textContent: portalShow.title }), when ? ` · ${when}` : '');
+    text.replaceChildren('Smoke Pit portal: ', Object.assign(document.createElement('b'), { textContent: portalShow.title }), when ? ` · ${when}` : '');
     useButton.hidden = titleInput.value === portalShow.title;
     hint.hidden = false;
   } else {

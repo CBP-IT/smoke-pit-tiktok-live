@@ -1,6 +1,7 @@
 // Copies the renderer's non-TypeScript files next to the compiled renderer.js.
-import { copyFileSync, mkdirSync } from 'node:fs';
+import { copyFileSync, cpSync, mkdirSync } from 'node:fs';
 
 mkdirSync('dist/renderer', { recursive: true });
 for (const file of ['index.html', 'styles.css']) copyFileSync(`src/renderer/${file}`, `dist/renderer/${file}`);
 copyFileSync('build/icon.png', 'dist/renderer/icon.png');
+cpSync('src/renderer/fonts', 'dist/renderer/fonts', { recursive: true });

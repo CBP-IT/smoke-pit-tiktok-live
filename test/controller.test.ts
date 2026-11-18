@@ -158,5 +158,5 @@ test('no show or an unreachable portal leaves the saved title alone', async () =
     ok: false,
     error: 'Could not reach the Smoke Pit portal: offline',
   });
-  assert.equal(down.store.settings.title, 'The Smoke Pit — LIVE');
+  assert.equal(down.store.settings.title, 'Crayon Eater Media — LIVE');
 });

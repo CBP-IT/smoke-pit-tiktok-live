@@ -23,8 +23,8 @@ function createWindow(): void {
     height: 780,
     minWidth: 480,
     minHeight: 600,
-    title: 'Smoke Pit TikTok LIVE',
-    backgroundColor: '#0a1628',
+    title: 'Crayon Eater Media LIVE',
+    backgroundColor: '#0d1f3c',
     show: false,
     webPreferences: {
       preload: join(__dirname, '../preload/preload.js'),
